@@ -3,6 +3,8 @@ Version One
 This program will convert Temperatures of Celcius and Farenheit Interchangably
 '''
 from tkinter import *
+CELCIUSABSOLUTEZERO = -273.15
+FARENHEITABSOLUTEZERO = -459.67
 class Converter:
     # Initating Title Screen
     def __init__(self):
@@ -36,6 +38,7 @@ class Converter:
         frame=Frame(self.container)
         frame.grid(row=0, column=0, sticky='nswe')
 
+        # Title
         self.l_title=Label(frame, text='Temperature Converter', font='Arial 20 bold')
         self.l_title.grid(columnspan=2, row=0, sticky='nsew')
 
@@ -64,15 +67,15 @@ class Converter:
         self.b_calc = Button(frame, text='Calculate', font='Arial 10', command=lambda:self.calculate_to('f'))
         self.b_calc.grid(row=2, column=0,sticky='nsew')
 
-        self.b_calc = Button(frame, text='Back', font='Arial 10', command=lambda:self.show_frame('main_frame'))
-        self.b_calc.grid(row=2, column=1,sticky='nsew')
+        self.b_back = Button(frame, text='Back', font='Arial 10', command=lambda:self.show_frame('main_frame'))
+        self.b_back.grid(row=2, column=1,sticky='nsew')
 
-        self.b_calc = Button(frame, text='Reset', font='Arial 10', command=lambda:self.e_celcius.delete(0,END))
-        self.b_calc.grid(row=2, column=2,sticky='nsew')
+        self.b_reset = Button(frame, text='Reset', font='Arial 10', command=lambda:self.e_celcius.delete(0,END))
+        self.b_reset.grid(row=2, column=2,sticky='nsew')
 
         # Calculated Temperature
-        self.l_temperature=Label(frame, text='Converted Temperature Goes Here', font='Arial 8')
-        self.l_temperature.grid(columnspan=3, row=3, sticky='nsew')
+        self.l_ftemperature=Label(frame, text='Converted Temperature Goes Here', font='Arial 8')
+        self.l_ftemperature.grid(columnspan=3, row=3, sticky='nsew')
 
         return frame
     
@@ -92,27 +95,35 @@ class Converter:
         self.b_calc = Button(frame, text='Calculate', font='Arial 10', command=lambda:self.calculate_to('c'))
         self.b_calc.grid(row=2, column=0,sticky='nsew')
 
-        self.b_calc = Button(frame, text='Back', font='Arial 10', command=lambda:self.show_frame('main_frame'))
-        self.b_calc.grid(row=2, column=1,sticky='nsew')
+        self.b_back = Button(frame, text='Back', font='Arial 10', command=lambda:self.show_frame('main_frame'))
+        self.b_back.grid(row=2, column=1,sticky='nsew')
 
-        self.b_calc = Button(frame, text='Reset', font='Arial 10', command=lambda:self.e_celcius.delete(0,END))
-        self.b_calc.grid(row=2, column=2,sticky='nsew')
+        self.b_reset = Button(frame, text='Reset', font='Arial 10', command=lambda:self.e_farenheit.delete(0,END))
+        self.b_reset.grid(row=2, column=2,sticky='nsew')
 
         # Calculated Temperature
-        self.l_temperature=Label(frame, text='Converted Temperature Goes Here', font='Arial 8')
-        self.l_temperature.grid(columnspan=3, row=3, sticky='nsew')
+        self.l_ctemperature=Label(frame, text='Converted Temperature Goes Here', font='Arial 8')
+        self.l_ctemperature.grid(columnspan=3, row=3, sticky='nsew')
 
         return frame
 
     def calculate_to(self, temperature_type):
+        # Converts Temperature
         try:
             if temperature_type=='f':
-                self.l_temperature.configure(text=str(float(self.e_celcius.get())*1.8+32)+'F')
+                if float(self.e_celcius.get())>=CELCIUSABSOLUTEZERO:
+                    self.l_ftemperature.configure(text=str(float(self.e_celcius.get())*1.8+32)+'F')
+                else:
+                    self.l_ftemperature.configure(text='Enter value above absolute zero ('+str(CELCIUSABSOLUTEZERO)+'C)')
             elif temperature_type=='c':
-                self.l_temperature.configure(text=str((float(self.e_farenheit.get())-32)/1.8+32)+'C')
+                if float(self.e_farenheit.get())>=FARENHEITABSOLUTEZERO:
+                    self.l_ctemperature.configure(text=str((float(self.e_farenheit.get())-32)/1.8)+'C')
+                else:
+                    self.l_ctemperature.configure(text='Enter value above absolute zero ('+str(FARENHEITABSOLUTEZERO)+'F)')
 
         except ValueError:
-            self.l_temperature.configure(text='Enter Only Numbers')
+            self.l_ftemperature.configure(text='Enter Only Numbers')
+            self.l_ctemperature.configure(text='Enter Only Numbers')
 
 app=Converter()
 app.run()
